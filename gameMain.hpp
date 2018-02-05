@@ -29,16 +29,23 @@ void gameDisplay(myGameScene scene)
 	// 変換行列初期化
 	glLoadIdentity();
 
+
+
+	glLightfv(GL_LIGHT1, GL_POSITION, scene.light0.pos());
+
+
 	// 視点位置と視線方向
 	gluLookAt(scene.camera.x, scene.camera.y, scene.camera.z, scene.camera.lookat_x(), scene.camera.lookat_y(), scene.camera.lookat_z(), 0.0, 1.0, 0.0);
 
+
 	// 光源の位置設定
-	glLightfv(GL_LIGHT0, GL_POSITION, scene.light0.pos());
+	//glLightfv(GL_LIGHT0, GL_SPECULAR, scene.light0.pos());
 	//glLightfv(GL_LIGHT1, GL_POSITION, light1pos);
 
 
 	/* 図形の色 (赤)  */
 	GLfloat red[] = { 0.8, 0.2, 0.2, 1.0 };
+	GLfloat green[] = { 0, 1, 0, 1.0 };
 	GLfloat black[] = { 0.0, 0.0, 0.0, 1.0 };
 	GLdouble normal[][3] = {
 		{ 0.0, 0.0,-1.0 },
@@ -84,6 +91,7 @@ void gameDisplay(myGameScene scene)
 	// 背景（景色）の描画
 	for (int i = 0; i < 4; i++) {
 		glPushMatrix();
+		glLineWidth(30);
 		glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, black);
 		glRotated(22.5*i, 0, 1.0, 0);
 		glBegin(GL_LINES);
@@ -116,6 +124,30 @@ void gameDisplay(myGameScene scene)
 		itr++;
 	}
 
+	// Rayの描画
+	glDisable(GL_LIGHTING);
+	itr = scene.ray_effect.begin();
+	while (itr != scene.ray_effect.end()) {
+		glPushMatrix();
+		glColor3d(0.0, 1, 0.0);
+		glLineWidth(itr->v_dist);
+		glBegin(GL_LINES);
+		/*
+		GLdouble tmp11[] = { 5, -10, 10 }, tmp12[] = { 10, 10, 10 };
+		glVertex3dv(tmp11);
+		glVertex3dv(tmp12);
+		*/
+		glVertex3d(0, -0.5, 0);
+
+		//glVertex3d(10, 10, 10);
+		//glVertex3d(100*scene.camera.lookat_x(), 100*scene.camera.lookat_y(), 100*scene.camera.lookat_z());
+		glVertex3d(itr->pos_x(), itr->pos_y(), itr->pos_z());
+		glEnd();
+		glPopMatrix();
+		itr++;
+	}
+	glEnable(GL_LIGHTING);
+
 	glutSwapBuffers();
 }
 
@@ -136,6 +168,7 @@ void gameMouse(myGameScene *scene, int button, int state, int x, int y) {
 			scene->ray.theta_xy = scene->camera.theta_xy;
 			scene->ray.theta_xz = scene->camera.theta_xz;
 			scene->ray.dist = 50;
+			scene->ray_effect.push_back(myObject(100, 30, scene->camera.theta_xy, scene->camera.theta_xz, 0, 0));
 		}
 		else {
 			isClicked = false;

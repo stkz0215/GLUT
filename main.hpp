@@ -48,6 +48,7 @@ public:
 	myLight light0;
 	list<myObject> enemy;
 	myObject ray;
+	list<myObject> ray_effect;
 
 	myGameScene(){}
 
@@ -56,7 +57,7 @@ public:
 		window(_w),
 		frames(0),
 		camera(myCamera()),
-		light0(myLight())
+		light0(myLight(0, 0, -1))
 	{
 
 	}
@@ -89,8 +90,10 @@ public:
 				ray = myObject();
 			}
 			/* ---------------
-				オブジェクト移動
+				オブジェクト生成・移動
 			   --------------- */
+
+			// 敵の生成
 			random_device rnd;     // 非決定的な乱数生成器を生成
 			mt19937 mt(rnd());     //  メルセンヌ・ツイスタの32ビット版、引数は初期シード値
 			uniform_real_distribution<> rand_rad(0, M_PI);
@@ -100,6 +103,7 @@ public:
 				}
 			}
 
+			// 敵の移動
 			auto itr = enemy.begin();
 			while (itr != enemy.end()) {
 				itr->dist -= itr->v_dist;
@@ -111,6 +115,23 @@ public:
 				if (itr->dist <= 1) itr = enemy.erase(itr);
 				else itr++;
 			}
+
+			// レイのエフェクト
+			//if (!ray_effect.empty()) {
+				itr = ray_effect.begin();
+				while (itr != ray_effect.end()) {
+					if (itr->v_dist <= 0) {
+						itr = ray_effect.erase(itr);
+						continue;
+					}
+					else {
+						itr->v_dist -= 1;
+						itr++;
+					}
+				}
+			//}
+
+			// フレーム数+1
 			frames++;
 			break;
 		}

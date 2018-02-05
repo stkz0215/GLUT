@@ -36,6 +36,9 @@ int main(int argc, char *argv[]) {
 	// GLUT初期化
 	glutInit(&argc, argv);
 
+	glutInitDisplayMode(GLUT_RGBA);
+
+
 	// ウィンドウ作成
 	myWindow* window = new myWindow();
 	window->createWindow();
@@ -81,7 +84,7 @@ void init() {
 	// ライト
 	glEnable(GL_LIGHTING);
 	glEnable(GL_LIGHT0);
-	//glLightfv(GL_LIGHT1, GL_DIFFUSE, green);
+	//glLightfv(GL_	1, GL_DIFFUSE, green);
 }
 
 
