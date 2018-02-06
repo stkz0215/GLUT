@@ -6,6 +6,7 @@
 #pragma once
 
 #include <GL/glut.h>
+#include <GL/freeglut.h>
 #include "gameObject.hpp"
 #include "main.hpp"
 
@@ -147,6 +148,33 @@ void gameDisplay(myGameScene scene)
 		itr++;
 	}
 	glEnable(GL_LIGHTING);
+
+	// è∆èÄÇÃï`âÊ
+	double txy = scene.camera.theta_xy, txz = scene.camera.theta_xz;
+	double x = 10*scene.camera.lookat_x(), y = 10*scene.camera.lookat_y(), z = 10*scene.camera.lookat_z();
+	glDisable(GL_LIGHTING);
+	glPushMatrix();
+	
+	glTranslated(x, y, z);
+	
+	glRotated(90-txz*180/M_PI, 0, 1, 0);
+	glRotated(-txy * 180 / M_PI, 1, 0, 0);
+	glColor3d(1, 0, 0);
+	glLineWidth(10);
+	glBegin(GL_LINE_LOOP);
+	for (int i = 0; i < 50; i++) {
+		double sx = 0.5 * cos(2.0*M_PI*(i/50.)), 
+			sy = 0.5 * sin(2.0*M_PI*(i/50.));
+		glVertex3d(sx, sy, 0);		// í∏ì_ÇÃç¿ïW
+	}
+	glEnd();
+	//glBegin
+	glPopMatrix();
+	glEnable(GL_LIGHTING);
+
+	// ï∂éöÇÃï`âÊ
+	glRasterPos3d(x, y, z);
+	glutBitmapString(GLUT_BITMAP_HELVETICA_18, (const unsigned char*)("Hello Free glut Font"));
 
 	glutSwapBuffers();
 }

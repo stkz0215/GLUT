@@ -122,7 +122,7 @@ void resize(int w, int h) {
 	/* 透視変換行列の設定 */
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(45.0, (double)w / (double)h, 1.0, 100.0);
+	gluPerspective(45.0, (double)w / (double)h, 0.1, 100.0);
 
 	/* モデルビュー変換行列の設定 */
 	glMatrixMode(GL_MODELVIEW);
